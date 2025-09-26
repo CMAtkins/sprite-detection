@@ -10,14 +10,11 @@ venv/
 .env/
 *.egg-info/
 
-# --- Training outputs (YOLO) ---
-runs/              # ignore all training runs
-!runs/final/       # allow a "final" subfolder to keep select results
-
 # --- Data ---
 data/              # ignore all raw/processed data
 !data/config.yaml
 !data/classes.txt
+!data/splits       # do not ignore data split for training
 
 # --- Models ---
 *.pt               # ignore all YOLO weights by default
