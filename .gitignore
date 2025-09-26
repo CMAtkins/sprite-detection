@@ -1,0 +1,28 @@
+# --- OS / Editor ---
+.DS_Store
+.idea/
+.vscode/
+__pycache__/
+*.pyc
+
+# --- Python envs ---
+venv/
+.env/
+*.egg-info/
+
+# --- Training outputs (YOLO) ---
+runs/              # ignore all training runs
+!runs/final/       # allow a "final" subfolder to keep select results
+
+# --- Data ---
+data/              # ignore all raw/processed data
+!data/config.yaml
+!data/classes.txt
+
+# --- Models ---
+*.pt               # ignore all YOLO weights by default
+!models/
+!models/best.pt    # track only the final trained model if desired
+
+# --- Logs ---
+*.log
