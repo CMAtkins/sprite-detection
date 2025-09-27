@@ -1,0 +1,8 @@
+path: /Users/chelseaatkins/Desktop/git/sprite-detection/data/splits
+
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: sprite

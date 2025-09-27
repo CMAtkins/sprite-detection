@@ -12,7 +12,7 @@ venv/
 
 # --- Data ---
 data/              # ignore all raw/processed data
-!data/config.yaml
+!data/sprite.yaml
 !data/classes.txt
 !data/splits       # do not ignore data split for training
 
