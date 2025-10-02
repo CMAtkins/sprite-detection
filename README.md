@@ -65,7 +65,7 @@ Evaluate on test set
 Most dependencies needed to serve the model were installed during Phase 2. **If Phase 2 was skipped, or if working from a fresh
 virtual environment**, _all_ dependencies can be downloaded using
 
-`pip install -r server/requirements.txt`. 
+`pip install -r server/dependencies.txt`. 
 
 **Otherwise**, just install what is needed for the server
 
