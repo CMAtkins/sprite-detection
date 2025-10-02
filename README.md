@@ -1,4 +1,7 @@
 # AI Framework for Detection of Lightning Sprites
+This project is created and maintained for educational purposes.
+Florida Gulf Coast University Department of Chemistry and Physics, Senior Capstone in Physics, Fall 2025.
+
 ## Phase 1: Data Preparation
 _Skip and go to phase 2 if image labelling is not necessary_
 
@@ -23,7 +26,7 @@ Abort trap: 6
 
 Change line `530` in
 
-`/Users/chelseaatkins/Desktop/git/sprite-detection/venv/lib/python3.10/site-packages/libs/canvas.py`
+`/venv/lib/python3.10/site-packages/libs/canvas.py`
 
 from 
 
@@ -36,7 +39,7 @@ to
 This may need to be changed in other places, but the error and fix are the same.
 
 ## Phase 2: Train Detection Model
-Not tested: Setup script may be able to expedite this `./setup_training_env.sh`
+**Not tested:** Setup script may be able to expedite this `./setup_training_env.sh`
 
 PyTorch supports Python 3.10, but on macOS there’s a long-standing issue where the PyTorch wheel sometimes fails to link
 against NumPy properly, producing `RuntimeError: Numpy is not available` when trying to run the training.
@@ -57,3 +60,27 @@ Run the training
 Evaluate on test set
 
 `yolo detect val model=runs/detect/train/weights/best.pt data=data/sprite.yaml split=test`
+
+## Phase 3: Serve the Model
+Most dependencies needed to serve the model were installed during Phase 2. **If Phase 2 was skipped, or if working from a fresh
+virtual environment**, _all_ dependencies can be downloaded using
+
+`pip install -r server/requirements.txt`. 
+
+**Otherwise**, just install what is needed for the server
+
+`pip install fastapi uvicorn[standard] python-multipart`
+
+Run server (from repo root)
+
+`uvicorn server.main:app --reload --host 0.0.0.0 --port 8000`
+
+Wait for the "INFO:     Application startup complete." message to display in the console. Ensure the server is running by 
+going to `http://0.0.0.0:8000` in a browser. The following message should display {"message":"Sprite Detection API is running"}.
+
+In a new terminal, while the server is running, test image annotation by pointing to a set of test images using  the client upload script.
+
+`python client_upload.py data/splits/images/test`
+
+This will save the annotated results (images with bounding boxes drawn) to `results/annotated`.
+The `--outdir` flag can be used to specify a custom output directory if preferred.

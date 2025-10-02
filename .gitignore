@@ -21,5 +21,8 @@ data/              # ignore all raw/processed data
 !models/
 !models/best.pt    # track only the final trained model if desired
 
+# --- API Results ---
+results/           # ignore anothing saved to the default client upload location
+
 # --- Logs ---
 *.log
