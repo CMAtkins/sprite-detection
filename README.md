@@ -78,9 +78,10 @@ Run server (from repo root)
 Wait for the "INFO:     Application startup complete." message to display in the console. Ensure the server is running by 
 going to `http://0.0.0.0:8000` in a browser. The following message should display {"message":"Sprite Detection API is running"}.
 
-In a new terminal, while the server is running, test image annotation by pointing to a set of test images using  the client upload script.
+In a new terminal from the repo root, while the server is running, test image annotation by pointing to a set of test images using  the client upload script.
+Update `data/splits/images/test` to the image directory of choice as needed.
 
-`python client_upload.py data/splits/images/test`
+`python scripts/client_upload.py data/splits/images/test`
 
-This will save the annotated results (images with bounding boxes drawn) to `results/annotated`.
-The `--outdir` flag can be used to specify a custom output directory if preferred.
+This will save the annotated results (labelled images with bounding boxes and confidence) to `results/annotated`.
+The`--outdir` flag can be used to specify a custom output directory if preferred.
