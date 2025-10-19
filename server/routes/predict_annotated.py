@@ -19,9 +19,8 @@ async def predict_annotated(files: List[UploadFile] = File(...)):
        - batch_grid.jpg summarizing all images in batch
     """
     tmpdir = tempfile.mkdtemp()
-    batch_dir = os.path.join(tmpdir, "batch_1")
-    os.makedirs(batch_dir, exist_ok=True)
-    sprites_dir = os.path.join(batch_dir, "sprites_detected")
+    work_dir = tmpdir
+    sprites_dir = os.path.join(work_dir, "sprites_detected")
     os.makedirs(sprites_dir, exist_ok=True)
 
     zip_path = os.path.join(tmpdir, "results.zip")
@@ -39,7 +38,7 @@ async def predict_annotated(files: List[UploadFile] = File(...)):
         # Create annotated image manually
         annotated_img = results[0].plot()
         annotated_name = f"annotated_{file.filename}"
-        annotated_path = os.path.join(batch_dir, annotated_name)
+        annotated_path = os.path.join(work_dir, annotated_name)
         cv2.imwrite(annotated_path, annotated_img)
 
         # Track image for grid display
@@ -58,15 +57,16 @@ async def predict_annotated(files: List[UploadFile] = File(...)):
     # Save a grid of all annotated images
     if grid_images:
         grid = make_grid(grid_images, cols=2)
-        grid_path = os.path.join(batch_dir, "batch_grid.jpg")
+        grid_path = os.path.join(work_dir, "batch_grid.jpg")
         cv2.imwrite(grid_path, grid)
 
     # Build the ZIP
+    zip_path = os.path.join(os.path.dirname(work_dir), "results.zip")
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
-        for foldername, _, filenames in os.walk(batch_dir):
+        for foldername, _, filenames in os.walk(work_dir):
             for filename in filenames:
                 file_path = os.path.join(foldername, filename)
-                arcname = os.path.relpath(file_path, tmpdir)
+                arcname = os.path.relpath(file_path, work_dir)
                 zipf.write(file_path, arcname)
 
     return FileResponse(zip_path, media_type="application/zip", filename="annotated_results.zip")

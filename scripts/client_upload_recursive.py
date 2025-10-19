@@ -50,7 +50,7 @@ def upload_batch(image_batch):
 
 def extract_results(zip_bytes, output_dir, batch_idx):
     """Extract one returned ZIP into an output directory.
-       Returns True if sprites_detected folder found inside the ZIP.
+       Returns (detected, batch_dir, detected_count)
     """
     os.makedirs(output_dir, exist_ok=True)
     tmp_zip = os.path.join(tempfile.gettempdir(), f"sprite_batch{batch_idx}.zip")
@@ -62,17 +62,20 @@ def extract_results(zip_bytes, output_dir, batch_idx):
     os.makedirs(batch_dir, exist_ok=True)
 
     detected = False
+    detected_count = 0
+
     with zipfile.ZipFile(tmp_zip, "r") as zipf:
+        # Extract all files first
         zipf.extractall(batch_dir)
-        # Check ZIP contents for sprites_detected
+
         for member in zipf.namelist():
-            # if member.startswith("sprites_detected/") and member.lower().endswith(VALID_EXTS):
-            if "/sprites_detected/" in member and member.lower().endswith(VALID_EXTS):
+            parts = member.replace("\\", "/").split("/")
+            if "sprites_detected" in parts and member.lower().endswith(VALID_EXTS):
                 detected = True
-                break
+                detected_count += 1
 
     os.remove(tmp_zip)
-    return detected, batch_dir
+    return detected, detected_count, batch_dir
 
 
 def zip_full_run(results_dir):
@@ -125,16 +128,19 @@ def main():
         print(f"\n📦 Processing batch {i + 1}/{total_batches} ({len(batch)} images)")
         try:
             zip_bytes = upload_batch(batch)
-            detected, batch_dir = extract_results(zip_bytes, output_dir, i + 1)
+            detected, detected_count, batch_dir = extract_results(zip_bytes, output_dir, i + 1)
             if detected:
                 detected_batches.append(i + 1)
-                print(f"✨ Batch {i + 1}: Sprites detected! See: {batch_dir}/sprites_detected/")
+                plural = "sprite" if detected_count == 1 else "sprites"
+                print(
+                    f"✨ {detected_count} {plural} detected. See: {batch_dir}/sprites_detected/")
             else:
                 print(f"⚪ Batch {i + 1}: No sprites detected.")
+
         except Exception as e:
             print(f"❌ Error processing batch {i + 1}: {e}")
 
-    print("\n📊 ---------- SUMMARY ----------")
+    print("\n---------- SUMMARY ----------")
     print(f"Processed {total_batches} batch(es) from {len(image_paths)} images.")
     if detected_batches:
         print(f"✨ Sprites detected in batch(es): {', '.join(map(str, detected_batches))}")
