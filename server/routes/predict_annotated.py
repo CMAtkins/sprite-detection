@@ -56,9 +56,23 @@ async def predict_annotated(files: List[UploadFile] = File(...)):
 
     # Save a grid of all annotated images
     if grid_images:
-        grid = make_grid(grid_images, cols=2)
-        grid_path = os.path.join(work_dir, "batch_grid.jpg")
-        cv2.imwrite(grid_path, grid)
+        # Create multiple 4x4 grid images
+        num_grids = make_grid(grid_images, 4, 8, work_dir, "batch_grid")
+        print(f"Created {num_grids} batch grid image(s) in {work_dir}")
+
+        sprite_imgs = []
+        for fname in os.listdir(sprites_dir):
+            if fname.lower().endswith((".jpg", ".jpeg", ".png")):
+                sprite_imgs.append(cv2.imread(os.path.join(sprites_dir, fname)))
+
+        if sprite_imgs:
+            num_grids_sprite = make_grid(sprite_imgs, 4, 8, sprites_dir, "batch_grid_sprites")
+            print(f"Created {num_grids_sprite} sprite-only grid image(s) in {sprites_dir}")
+
+    # if grid_images:
+    #     grid = make_grid(grid_images, cols=2)
+    #     grid_path = os.path.join(work_dir, "batch_grid.jpg")
+    #     cv2.imwrite(grid_path, grid)
 
     # Build the ZIP
     zip_path = os.path.join(os.path.dirname(work_dir), "results.zip")
