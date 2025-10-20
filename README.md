@@ -78,10 +78,47 @@ Run server (from repo root)
 Wait for the "INFO:     Application startup complete." message to display in the console. Ensure the server is running by 
 going to `http://0.0.0.0:8000` in a browser. The following message should display {"message":"Sprite Detection API is running"}.
 
-In a new terminal from the repo root, while the server is running, test image annotation by pointing to a set of test images using  the client upload script.
-Update `data/splits/images/test` to the image directory of choice as needed.
+The API docs can be viewed at `http://127.0.0.1:8000/docs`
 
-`python scripts/client_upload.py data/splits/images/test`
+### Client Upload (Annotated)
+
+In a new terminal from the repo root, while the server is running, test image annotation by pointing to a set of test images using the client upload script.
+
+`python scripts/client_upload.py <img-dir>`
 
 This will save the annotated results (labelled images with bounding boxes and confidence) to `results/annotated`.
 The`--outdir` flag can be used to specify a custom output directory if preferred.
+
+For larger image sets or those with nested directories, it is recommended to use the client_upload_recursive script.
+By default, the recursive script will batch process into uploads of 100 images. The optional batch flag may be used to
+specify a different batching number.
+
+`python scripts/client_upload_recursive.py <image_dir> [--batch N]`
+
+### Client Upload (JSON)
+
+To get classification, confidence, and bounding box information in JSON format for a given image or images, use the following
+command:
+
+```
+curl -X POST "http://127.0.0.1:8000/predict/" \
+    -F "file=@<img_file>"
+```
+Example output:
+
+```
+{
+    "detections":[
+        {
+            "class": "sprite",
+            "confidence": 0.5845668315887451,
+            "bbox": [
+                356.70672607421875,
+                395.62652587890625,
+                382.57403564453125,
+                453.54345703125
+            ]
+        }
+    ]
+}
+```
