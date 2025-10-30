@@ -1,0 +1,25 @@
+[project]
+name = "obj-cli"
+version = "0.1.0"
+description = "OBJ: Command-line toolkit for object detection and analysis."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "typer[all]",
+    "requests",
+    "rich",
+    "pillow"
+]
+
+[project.scripts]
+obj = "cli.obj_cli:app"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = ["cli*"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

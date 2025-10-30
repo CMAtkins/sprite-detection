@@ -6,9 +6,9 @@ import numpy as np
 import cv2
 import tempfile, os, zipfile
 from server.util.image_grid import make_grid
+from server.core.model import model
 
 router = APIRouter()
-model = YOLO("server/models/best.pt")
 
 
 @router.post("/predict-annotated/")
