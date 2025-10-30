@@ -70,21 +70,36 @@ def split_dataset(images_dir, labels_dir, output_dir, train_ratio=0.7, val_ratio
     print(f"Split complete: {n_train} train, {n_val} val, {n_test} test")
 
 
+def create_empty_labels_for_negatives(negatives_dir):
+    for filename in os.listdir(negatives_dir):
+        if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+            label_filename = os.path.splitext(filename)[0] + '.txt'
+            label_path = os.path.join(negatives_dir, label_filename)
+
+            # Create an empty .txt if it doesn't exist
+            if not os.path.exists(label_path):
+                open(label_path, 'a').close()
+
+    print(f"Created empty label files for negatives in: {negatives_dir}")
+
+
 if __name__ == "__main__":
 
     # PATHS
     raw_images_path = "/Users/chelseaatkins/Desktop/git/sprite-detection/data/raw/raw_images"
     labels_path = "/Users/chelseaatkins/Desktop/git/sprite-detection/data/labels"
     images_path = "/Users/chelseaatkins/Desktop/git/sprite-detection/data/images"
-    data_split_path = "/Users/chelseaatkins/Desktop/git/sprite-detection/data/splits"
+    negatives_path = "/Users/chelseaatkins/Desktop/git/sprite-detection/data/negatives"
+    data_split_path = "/data/splits2"
 
     # determine how many YOLO files we have available for model training
     count = count_txt_files(raw_images_path)
     print(f"Current number of YOLO files '{raw_images_path}': {count}")
 
     # DO NOT UNCOMMENT UNLESS MOVING AND SPLITTING NEW DATA FOR THE MODEL TRAINING SET
+    # create_empty_labels_for_negatives(negatives_path)
     # move_raw_data(raw_images_path, labels_path, images_path) # update the training data directories
-    # split_dataset(images_path, labels_path, data_split_path, train_ratio=0.7, val_ratio=0.2, test_ratio=0.1)
+    split_dataset(images_path, labels_path, data_split_path, train_ratio=0.7, val_ratio=0.2, test_ratio=0.1)
 
 
 
