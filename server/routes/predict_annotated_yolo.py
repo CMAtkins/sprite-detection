@@ -6,13 +6,15 @@ import numpy as np
 import cv2
 import tempfile, os, zipfile
 from server.util.image_grid import make_grid
-from server.core.model import model
+from server.core.model import get_model, ModelType
 
 router = APIRouter()
 
+model = get_model("yolo")
 
-@router.post("/predict-annotated/")
-async def predict_annotated(files: List[UploadFile] = File(...)):
+
+@router.post("/predict/annotated/yolo/")
+async def predict_annotated_yolo(files: List[UploadFile] = File(...)):
     """Run YOLO inference on uploaded images and return a ZIP with:
        - annotated images for all files
        - sprites_detected/ folder for those containing detections
@@ -33,7 +35,7 @@ async def predict_annotated(files: List[UploadFile] = File(...)):
         img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 
         # Run YOLO inference without automatic save
-        results = model.predict(img, conf=0.25, save=False)
+        results = model(img, conf=0.25)
 
         # Create annotated image manually
         annotated_img = results[0].plot()
@@ -46,7 +48,7 @@ async def predict_annotated(files: List[UploadFile] = File(...)):
 
         # Check for sprite detections
         found_sprite = any(
-            "sprite" in model.names[int(box.cls)].lower()
+            "sprite" in model.model.names[int(box.cls)].lower()
             for r in results for box in r.boxes
         )
 

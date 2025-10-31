@@ -1,6 +1,10 @@
 from fastapi import FastAPI, File, UploadFile
 from ultralytics import YOLO
-from server.routes import predict, predict_annotated, batch_detect
+from server.routes import batch_detect
+from server.routes.predict_yolo import router as yolo_router
+from server.routes.predict_keras import router as keras_router
+from server.routes.predict_annotated_yolo import router as yolo_annotated_router
+# from server.routes.predict_annotated_keras import router as keras_annotated_router
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 
@@ -13,8 +17,10 @@ app = FastAPI(title="Sprite Detection API")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Register routes
-app.include_router(predict.router)
-app.include_router(predict_annotated.router)
+app.include_router(yolo_router)
+app.include_router(keras_router)
+app.include_router(yolo_annotated_router)
+# app.include_router(keras_annotated_router)
 app.include_router(batch_detect.router)
 
 model = YOLO("server/models/best.pt")

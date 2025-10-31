@@ -6,12 +6,14 @@ from typing import List
 import zipfile, shutil, os, math, cv2, numpy as np
 from ultralytics import YOLO
 from server.util.image_grid import make_grid
-from server.core.model import model
+from server.core.model import get_model, ModelType
 
 router = APIRouter()
 RESULTS_DIR = Path("static/results")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
+
+model = get_model("yolo")
 
 # Accepts multiple images, runs YOLOv8 inference, saves annotated
 # and detected images, makes grids, zips results, returns URLs

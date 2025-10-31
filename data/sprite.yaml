@@ -1,4 +1,4 @@
-path: splits
+path: data/splits2
 
 train: images/train
 val: images/val

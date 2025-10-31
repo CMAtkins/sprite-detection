@@ -4,8 +4,15 @@ import sys
 import argparse
 from datetime import datetime
 
-API_URL = "http://127.0.0.1:8000/predict-annotated/"
 DEFAULT_OUTPUT_DIR = "results/annotated"
+
+parser = argparse.ArgumentParser()
+parser.add_argument("img_dir")
+parser.add_argument("--backend", choices=["yolo", "keras"], default="yolo")
+args = parser.parse_args()
+
+API_URL = f"http://127.0.0.1:8000/predict/annotated/{args.backend}/"
+
 
 def upload_dir(img_dir, output_path):
     if not os.path.isdir(img_dir):
