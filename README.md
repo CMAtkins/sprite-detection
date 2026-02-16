@@ -9,6 +9,10 @@ labelImg: GUI tool to label frames in YOLO format. This was done in a venv using
 
 `pip install labelImg==1.8.6`
 
+If using python version 3.12+ it may be necessary to install setuptools to allow labelImg to launch
+
+`pip install setuptools`
+
 It might be necessary to patch labelImg
 
 ```
@@ -61,6 +65,8 @@ Evaluate on test set
 
 `yolo detect val model=runs/detect/train/weights/best.pt data=data/sprite.yaml split=test`
 
+- [ ] Add notes on legacy model integration
+
 ## Phase 3: Serve the Model
 Most dependencies needed to serve the model were installed during Phase 2. **If Phase 2 was skipped, or if working from a fresh
 virtual environment**, _all_ dependencies can be downloaded using
@@ -82,6 +88,8 @@ The API docs can be viewed at `http://127.0.0.1:8000/docs`
 
 ### Client Upload (Annotated)
 
+- [ ] Add backend flag option documentation, update commands
+
 In a new terminal from the repo root, while the server is running, test image annotation by pointing to a set of test images using the client upload script.
 
 `python scripts/client_upload.py <img-dir>`
@@ -101,7 +109,7 @@ To get classification, confidence, and bounding box information in JSON format f
 command:
 
 ```
-curl -X POST "http://127.0.0.1:8000/predict/" \
+curl -X POST "http://127.0.0.1:8000/predict/yolo/" \
     -F "file=@<img_file>"
 ```
 Example output:
@@ -122,3 +130,22 @@ Example output:
     ]
 }
 ```
+
+- [ ] Add Keras example
+
+## Phase 4: CLI Tooling
+
+From the project root:
+
+`pip install typer[all] requests rich pillow`
+
+`pip install -e .`
+
+## Phase 5: Database and Metadata
+
+- [ ] Parse XML files
+- [ ] Configure, connect, init SQLite
+- [ ] Basic insert and query
+- [ ] Store XML data in SQLite
+
+## Phase 6: Querying and Reporting
