@@ -1,8 +1,9 @@
-path: data/splits2
+path: data/spritesplit
 
 train: images/train
 val: images/val
 test: images/test
 
 names:
-  0: sprite
+  0: meteor
+  1: sprite
